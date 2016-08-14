@@ -30,24 +30,42 @@ void Cabecera()
 
 void Cuerpo()
 {
-	//cabeza
-	gotoxy(46,3);cout<<"###";
-	gotoxy(45,4);cout<<"#####";
-	gotoxy(46,5);cout<<"###";
-	//tronco
-	gotoxy(47,6);cout<<"#";
-	gotoxy(47,7);cout<<"#";
-	gotoxy(47,8);cout<<"#";
-	// brazo derecho
-	gotoxy(48,7);cout<<"###";
-	// brazo izuierdo
-	gotoxy(44,7);cout<<"###";
-	// pierna derecha
-	gotoxy(46,9);cout<<"#";
-	gotoxy(44,10);cout<<"##";
-	// pierna izuierda
-	gotoxy(48,9);cout<<"#";
-	gotoxy(49,10);cout<<"##";
+	if(CErrada>=1)
+	{
+		//Cabeza
+		gotoxy(46,3);cout<<"###";
+		gotoxy(45,4);cout<<"#####";
+		gotoxy(46,5);cout<<"###";	
+	}
+	if(CErrada>=2)
+	{
+		//tronco
+		gotoxy(47,6);cout<<"#";
+		gotoxy(47,7);cout<<"#";
+		gotoxy(47,8);cout<<"#";		
+	}
+	if(CErrada>=3)
+	{
+		// brazo derecho
+		gotoxy(48,7);cout<<"###";		
+	}
+	if(CErrada>=4)
+	{
+		// brazo izuierdo
+		gotoxy(44,7);cout<<"###";		
+	}
+	if(CErrada>=5)
+	{
+		// pierna derecha
+		gotoxy(46,9);cout<<"#";
+		gotoxy(44,10);cout<<"##";		
+	}
+	if(CErrada>=6)
+	{
+		// pierna izuierda
+		gotoxy(48,9);cout<<"#";
+		gotoxy(49,10);cout<<"##";		
+	}
 }
 
 void menu()
@@ -90,11 +108,6 @@ int validacion(int letra)
 	int control=0;
 	for(int i=0;i<Tam;i++)
 	{
-		if(palabra.at(i)==32)
-		{
-			RTA[i]=95;
-			CCorrecta++;
-		}
 		if(palabra.at(i)==letra)
 		{
 			RTA[i]=letra;
@@ -102,13 +115,30 @@ int validacion(int letra)
 			CCorrecta++;
 		}
 	}
-	if(control==0)
+	if(control==0) //Letra errada
 	{
+		Errada[CErrada]=letra;
 		CErrada++;
+		return 0;
+	}else{
+		return 1;
 	}
 }
 
-int constLinRta(int T)
+void inciarRTA()
+{
+	for(int i=0;i<Tam;i++)
+	{
+		if(palabra.at(i)==32)
+		{
+			RTA[i]=95;
+		}else{
+			RTA[i]=32;
+		}
+	}
+}
+
+int constLinRta(int T) // Muestra la linea de Respuesta
 {
 	gotoxy(5,13);
 	for(int i=0;i<T;i++)
@@ -117,12 +147,17 @@ int constLinRta(int T)
 	}
 	gotoxy(0,14);
 	Separador;
-	cout<<RTA;
-	cout<<"\n\tLetras Erradas : ";	
-	cout<<Errada;
+	Cuerpo();
+	gotoxy(60,2);	
+	cout<<"Letras Erradas : "<<CErrada<<"\n";
+	for(int j=0;j<CErrada;j++)
+	{
+		gotoxy(63,j+4);
+		cout<<j+1<<".\t"<<Errada[j]<<" ";
+	}
 }
 
-int captletra()
+int captletra() //Captura las letras para las respuestas
 {
 	string ltr;
 	int i=0;
@@ -162,7 +197,7 @@ int captletra()
 	return 0;
 }
 
-string captPalabra()
+string captPalabra() //Captura la Palabra Oculta para adivinar
 {
 	getline(cin, palabra);
 	int control, max=16;
@@ -210,13 +245,21 @@ int juego()
 	string palabra;
 	char letra;
 	Tam=0;
+	int z;
 
 	palabra=captPalabra();
 	Tam=palabra.length();
+	inciarRTA();
 	do{
-		validacion(captletra());
+		letra=captletra();
+		z=validacion(letra);
 		constLinRta(Tam);
-		cout<<"\n\n\n\n# correcta: "<<CCorrecta<<"\t # Errada: "<<CErrada<<"\t Tam: "<<Tam<<"\n";
+		if(z==1)
+		{
+			gotoxy(27,20);cout<<"** LETRA [ "<<letra<<" ] CORRECTA **\n\n";
+		}else{
+			gotoxy(26,20);cout<<"** LETRA [ "<<letra<<" ] INCORRECTA **\n\n";
+		}
 		system("pause");
 	}while(CCorrecta<Tam && CErrada<6);
 	if(CErrada>=6)
@@ -231,6 +274,7 @@ int juego()
 	}
 	system("cls");
 	Cabecera();
+	Cuerpo();
 	gotoxy(30,14);
 	cout<<"!!! FELICITACIONES !!!\n\n\t\t\tHAS ENCONTRADO LA PALABRA OCULTA:";
 	gotoxy(40-((Tam+6)/2),18);cout<<"** "<<palabra<<" **\n\n";
