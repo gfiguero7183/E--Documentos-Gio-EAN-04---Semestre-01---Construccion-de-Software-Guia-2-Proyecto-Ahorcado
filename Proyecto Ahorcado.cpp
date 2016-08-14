@@ -1,5 +1,5 @@
 #include <iostream>
-#include <string.h>
+#include <string>
 #define Banner 	cout<<"\t\t\t\t** JUEGO AHORCADO **	\n\n"
 
 using namespace std;
@@ -89,18 +89,50 @@ int captletra()
 	return 0;
 }
 
+string captPalabra()
+{
+	string palabra;
+	getline(cin, palabra);
+	int control;
+	do
+	{
+		system("cls");
+		Banner;
+		cout<<"\nDigite la palabra a descubrir:  ";
+		getline(cin, palabra);
+		cout<<"\n\n\n\nPalabra buscada: ***  "<<palabra<<endl;
+		system("pause");
+		
+		
+		for (int i = 0; i < palabra.length(); i++)
+    	{	
+	        int T = palabra.at(i);
+			if(T >= 97 && T<=122 || T==-92)
+			{
+				T=minMAY(T);
+				palabra.at(i)=T;
+   			}
+	        if(T >= 65 && T<=90 || T==-91 || T==32)
+			{
+				control=0;
+			}else{
+				control=2;
+				i = palabra.length();
+				cout<<"\a\n\n\t**  ERROR **\n POR FAVOR DIGITE UNA PALABRA QUE CONTENGA UNICAMENTE LETRAS ENTRE A-Z\n\n";
+				system("pause");
+			}	
+    	}
+	}while(control==2);
+	return palabra;
+}
+
+
 int juego()
 {
 	string palabra;
 	char letra;
-	int x;
-	system("cls");
-	Banner;
-	cout<<"\nDigite la palabra a descubrir:  ";
-	cin>>palabra;
-	x=palabra.length();
-	cout<<"\n\n\n\n";
 
+	palabra=captPalabra();
 	letra=captletra();
 	cout<<"\n\n\n\nPalabra buscada: ***  "<<palabra<<endl;
 	cout<<"\n\nletra seleccionada: ***  "<<letra<<endl;
@@ -110,7 +142,7 @@ int juego()
 
 int main()
 {
-	int dato,op,x;
+	int op;
 	system ("color 9F");
 	
 	do
