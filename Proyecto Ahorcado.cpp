@@ -1,27 +1,59 @@
 #include <iostream>
 #include <string>
-#define Banner 	cout<<"\t\t\t\t** JUEGO AHORCADO **	\n\n"
+#include <windows.h>
+
+#define Banner 	cout<<"\t\t\t\t** JUEGO AHORCADO **"
+#define Horca 	cout<<"\n\t\t\t\t     ===========\n\t\t\t\t     ||        |		\n\t\t\t\t     ||\n\t\t\t\t     ||\n\t\t\t\t     ||\n\t\t\t\t     ||\n\t\t\t\t     ||\n\t\t\t\t     ||\n\t\t\t\t     ||\n\t\t\t\t     ||\n\t\t\t\t     ||\n"
+#define Separador 	for(int i=0;i<80;i++){cout<<"="; }
 
 using namespace std;
+int Tam, CCorrecta,CErrada;
+string palabra;
+string RTA;
+string Errada;
+
+void gotoxy(int x, int y) // tomada de https://www.youtube.com/watch?v=WuEQW1j_lAk
+{
+	HANDLE hcon= GetStdHandle(STD_OUTPUT_HANDLE);
+	COORD dwPos;
+	dwPos.X=x;
+	dwPos.Y=y;
+	SetConsoleCursorPosition(hcon,dwPos);
+}
+
+void Cabecera()
+{
+	Banner;
+	Horca;
+	Separador;
+}
+
+void Cuerpo()
+{
+	//cabeza
+	gotoxy(46,3);cout<<"###";
+	gotoxy(45,4);cout<<"#####";
+	gotoxy(46,5);cout<<"###";
+	//tronco
+	gotoxy(47,6);cout<<"#";
+	gotoxy(47,7);cout<<"#";
+	gotoxy(47,8);cout<<"#";
+	// brazo derecho
+	gotoxy(48,7);cout<<"###";
+	// brazo izuierdo
+	gotoxy(44,7);cout<<"###";
+	// pierna derecha
+	gotoxy(46,9);cout<<"#";
+	gotoxy(44,10);cout<<"##";
+	// pierna izuierda
+	gotoxy(48,9);cout<<"#";
+	gotoxy(49,10);cout<<"##";
+}
 
 void menu()
 {
-	Banner;
-	cout<<"\t\t\t\t     ==========		\n";
-	cout<<"\t\t\t\t     |        |		\n";
-	cout<<"\t\t\t\t     |       ###		\n";
-	cout<<"\t\t\t\t     |      #####	\n";
-	cout<<"\t\t\t\t     |       ###		\n";
-	cout<<"\t\t\t\t     |        # 		\n";
-	cout<<"\t\t\t\t     |     #######	\n";
-	cout<<"\t\t\t\t     |        #		\n";
-	cout<<"\t\t\t\t     |        #		\n";
-	cout<<"\t\t\t\t     |       # #		\n";
-	cout<<"\t\t\t\t     |      #   #	\n";
-	cout<<"\t\t\t\t     |     ##   ## 	\n";
-	cout<<"\t\t\t\t     |				\n";
-	cout<<"\t\t\t\t =========			\n\n";
-	
+	Cabecera();
+	gotoxy(1,13);
 	cout<<"\t\t1. JUGAR\n";
 	cout<<"\t\t2. INSTRUCCIONES\n\n";
 	cout<<"\t\t9. SALIR\n";
@@ -33,7 +65,9 @@ void instrucciones()
 {
 	system("cls");
 	Banner;
-	cout<<"EL JUEGO AHORCADO FUNCIONA DE LA SIGUIENTE FORMA:\n\n";
+	cout<<"\n";
+	Separador;
+	cout<<"\nEL JUEGO AHORCADO FUNCIONA DE LA SIGUIENTE FORMA:\n\n";
 	cout<<"El supervisor ingresa la palabra para adivinar. \n\n";
 	cout<<"El jugador pide una letra. \n\n";
 	cout<<"* \tSi acierta, se escribe la letra en todas las casillas de la misma letra.\n\n";	
@@ -51,6 +85,43 @@ int minMAY(int i)
 		return -91;
 }
 
+int validacion(int letra)
+{
+	int control=0;
+	for(int i=0;i<Tam;i++)
+	{
+		if(palabra.at(i)==32)
+		{
+			RTA[i]=95;
+			CCorrecta++;
+		}
+		if(palabra.at(i)==letra)
+		{
+			RTA[i]=letra;
+			control=1;
+			CCorrecta++;
+		}
+	}
+	if(control==0)
+	{
+		CErrada++;
+	}
+}
+
+int constLinRta(int T)
+{
+	gotoxy(5,13);
+	for(int i=0;i<T;i++)
+	{
+		cout<<"["<<RTA[i]<<"] ";
+	}
+	gotoxy(0,14);
+	Separador;
+	cout<<RTA;
+	cout<<"\n\tLetras Erradas : ";	
+	cout<<Errada;
+}
+
 int captletra()
 {
 	string ltr;
@@ -60,8 +131,10 @@ int captletra()
 	do
 	{
 		system("cls");
-		Banner;	
-		cout<<"\t\t Digite una letra entre A-Z: ";
+		Cabecera();
+		constLinRta(Tam);
+		gotoxy(1,17);
+		cout<<"\n * Digite una letra entre A-Z: ";
 		cin>>ltr;
 		if(ltr.length()==1)
 		{
@@ -76,35 +149,40 @@ int captletra()
 				control=1;
 				return minMAY(i);
    			}else{
-				cout<<"\a\n\n\t**  ERROR **\n POR FAVOR DIGITE UNA SOLA LETRA ENTRE A-Z\n\n";
+   				system("cls");
+   				cout<<"\a\n\n\t**  ERROR **\n\nPOR FAVOR DIGITE UNA SOLA LETRA ENTRE\n\n";
 				system("pause");
 			}
 		}else{
-			cout<<"\a\n\n\t**  ERROR **\n POR FAVOR DIGITE UNA SOLA LETRA ENTRE A-Z\n\n";
+			system("cls");
+			cout<<"\a\n\n\t**  ERROR **\n\nPOR FAVOR DIGITE UNA SOLA LETRA ENTRE\n\n";
 			system("pause");
 		}
-								
 	}while(control!=1);
-
 	return 0;
 }
 
 string captPalabra()
 {
-	string palabra;
 	getline(cin, palabra);
-	int control;
+	int control, max=16;
 	do
 	{
 		system("cls");
-		Banner;
-		cout<<"\nDigite la palabra a descubrir:  ";
+		Cabecera();
+		gotoxy(1,13);
+		cout<<"Digite la palabra a descubrir:  ";
 		getline(cin, palabra);
-		cout<<"\n\n\n\nPalabra buscada: ***  "<<palabra<<endl;
-		system("pause");
+		int TP=palabra.length();		
+		if(TP>max)
+		{
+			control=2;
+			TP=0;
+		}else{
+			control=0;
+		}
 		
-		
-		for (int i = 0; i < palabra.length(); i++)
+		for (int i = 0; i < TP; i++)
     	{	
 	        int T = palabra.at(i);
 			if(T >= 97 && T<=122 || T==-92)
@@ -118,7 +196,8 @@ string captPalabra()
 			}else{
 				control=2;
 				i = palabra.length();
-				cout<<"\a\n\n\t**  ERROR **\n POR FAVOR DIGITE UNA PALABRA QUE CONTENGA UNICAMENTE LETRAS ENTRE A-Z\n\n";
+				system("cls");
+				cout<<"\a\n\n\t**  ERROR **\n\nPOR FAVOR DIGITE UNA PALABRA QUE CONTENGA UNICAMENTE LETRAS ENTRE A-Z\n\n";
 				system("pause");
 			}	
     	}
@@ -126,17 +205,35 @@ string captPalabra()
 	return palabra;
 }
 
-
 int juego()
 {
 	string palabra;
 	char letra;
+	Tam=0;
 
 	palabra=captPalabra();
-	letra=captletra();
-	cout<<"\n\n\n\nPalabra buscada: ***  "<<palabra<<endl;
-	cout<<"\n\nletra seleccionada: ***  "<<letra<<endl;
-	//system("pause");
+	Tam=palabra.length();
+	do{
+		validacion(captletra());
+		constLinRta(Tam);
+		cout<<"\n\n\n\n# correcta: "<<CCorrecta<<"\t # Errada: "<<CErrada<<"\t Tam: "<<Tam<<"\n";
+		system("pause");
+	}while(CCorrecta<Tam && CErrada<6);
+	if(CErrada>=6)
+	{
+		system("cls");
+		Cabecera();
+		Cuerpo();
+		gotoxy(27,14);cout<<"** LO SIENTO HAS PERDIDO **";
+		gotoxy(30,16);cout<<"LA PALABRA OCULTA ERA";
+		gotoxy(40-((Tam+6)/2),18);cout<<"** "<<palabra<<" **\n\n";
+		return 0;
+	}
+	system("cls");
+	Cabecera();
+	gotoxy(30,14);
+	cout<<"!!! FELICITACIONES !!!\n\n\t\t\tHAS ENCONTRADO LA PALABRA OCULTA:";
+	gotoxy(40-((Tam+6)/2),18);cout<<"** "<<palabra<<" **\n\n";
 	return 0;
 }
 
@@ -153,6 +250,8 @@ int main()
 		switch(op)
 		{
 			case 1:
+				CCorrecta=0;
+				CErrada=0;
 				juego();
 				system("pause");			
 			break;
