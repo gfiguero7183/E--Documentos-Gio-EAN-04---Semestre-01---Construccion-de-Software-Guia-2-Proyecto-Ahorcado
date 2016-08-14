@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string.h>
 #define Banner 	cout<<"\t\t\t\t** JUEGO AHORCADO **	\n\n"
 
 using namespace std;
@@ -42,9 +43,56 @@ void instrucciones()
 	cout<<"** \tEl cuerpo se dibuja en 6 partes (cabeza, tronco y extremidades),\n\tpor lo que el jugador tiene 6 posibilidades de fallar.\n\n\n";
 }
 
+int minMAY(int i)
+{
+	if(i >= 97 && i<=122)
+		return i-=32;
+	if(i == -92)
+		return -91;
+}
+
+int captletra()
+{
+	string ltr;
+	int i=0;
+	int control=0;
+
+	do
+	{
+		system("cls");
+		Banner;	
+		cout<<"\t\t Digite una letra entre A-Z: ";
+		cin>>ltr;
+		if(ltr.length()==1)
+		{
+			i=ltr.at(0);
+			if(i >= 65 && i<=90 || i==-91)
+			{
+				control=1;
+				return i;
+			}		
+			if(i >= 97 && i<=122 || i==-92)
+			{
+				control=1;
+				return minMAY(i);
+   			}else{
+				cout<<"\a\n\n\t**  ERROR **\n POR FAVOR DIGITE UNA SOLA LETRA ENTRE A-Z\n\n";
+				system("pause");
+			}
+		}else{
+			cout<<"\a\n\n\t**  ERROR **\n POR FAVOR DIGITE UNA SOLA LETRA ENTRE A-Z\n\n";
+			system("pause");
+		}
+								
+	}while(control!=1);
+
+	return 0;
+}
+
 int juego()
 {
 	string palabra;
+	char letra;
 	int x;
 	system("cls");
 	Banner;
@@ -52,11 +100,11 @@ int juego()
 	cin>>palabra;
 	x=palabra.length();
 	cout<<"\n\n\n\n";
-	system("pause");
-	system("cls");
-	Banner;	
-	cout<<"\t\t ** la palabra es: "<<palabra<<" tamaño: "<<x<<" **\n\n";
 
+	letra=captletra();
+	cout<<"\n\n\n\nPalabra buscada: ***  "<<palabra<<endl;
+	cout<<"\n\nletra seleccionada: ***  "<<letra<<endl;
+	//system("pause");
 	return 0;
 }
 
@@ -86,6 +134,3 @@ int main()
 	}while(op!=9);
 	return 0;
 }
-
-
-
