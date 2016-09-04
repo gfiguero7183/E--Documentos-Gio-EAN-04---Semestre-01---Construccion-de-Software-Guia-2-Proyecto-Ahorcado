@@ -306,26 +306,27 @@ int juego()
 
 int main()
 {
+	char opcion[1];
 	int op;
 	do
 	{
 		system ("color 9F");
 		menu(); 
-		cin>>op;
-		
+		scanf("%s",opcion);
+		op = opcion[0];
 		switch(op)
 		{
-			case 1:
+			case 49:
 				juego();
 				system("pause");			
 			break;
 			
-			case 2:
+			case 50:
 				instrucciones();
 				system("pause");			
 			break;	
 		}
 		system("cls");
-	}while(op!=9);
+	}while(op!=57);
 	return 0;
 }
