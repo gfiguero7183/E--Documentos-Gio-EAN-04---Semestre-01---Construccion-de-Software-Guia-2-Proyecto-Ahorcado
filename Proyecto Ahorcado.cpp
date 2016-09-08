@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <windows.h>
+#include <time.h>
 
 #define Banner 		gotoxy(30,0);cout<<"** JUEGO AHORCADO **"
 #define Horca 		gotoxy(34,1);cout<<"============";gotoxy(35,2);cout<<"||        |";gotoxy(35,3);cout<<"||";gotoxy(35,4);cout<<"||";gotoxy(35,5);cout<<"||";gotoxy(35,6);cout<<"||";gotoxy(35,7);cout<<"||";gotoxy(35,8);cout<<"||";gotoxy(35,9);cout<<"||";gotoxy(35,10);cout<<"||";gotoxy(35,11);cout<<"||\n";
@@ -97,6 +98,7 @@ void instrucciones()
 	cout<<"* \tGana el jugador si descubre la palabra o frase oculta\n\n";
 	cout<<"* \tPierde si se dibuja todo el cuerpo en la horca\n\n";
 	cout<<"** \tEl cuerpo se dibuja en 6 partes (cabeza, tronco y extremidades),\n\tpor lo que el jugador solo tiene 6 posibilidades de fallar.\n\n\n";
+	system("pause");
 }
 
 int minMAY(int i)// COnvierte las minusculas en mayusculas
@@ -246,6 +248,67 @@ string captPalabra() //Captura la Palabra Oculta para adivinar
 	return palabra;
 }
 
+string AutoPalabra() //Funcion para generar una Palabra Automatica para adivinar
+{
+	string ArregloDePalabras[15]  ;
+
+	ArregloDePalabras[0] = "PROGRAMADORES";
+	ArregloDePalabras[1] = "BINARIO";
+    ArregloDePalabras[2] = "JAVA";		
+	ArregloDePalabras[3] = "GITHUB";	
+	ArregloDePalabras[4] = "INGENIERIA";	
+	ArregloDePalabras[5] = "SISTEMAS";
+	ArregloDePalabras[6] = "EAN";
+    ArregloDePalabras[7] = "UNIVERSIDAD";		
+	ArregloDePalabras[8] = "SOFTWARE";	
+	ArregloDePalabras[9] = "HEROKU";	
+	ArregloDePalabras[10] = "CONSTUCCION";
+	ArregloDePalabras[11] = "VIRTUAL";
+    ArregloDePalabras[12] = "CLASES";		
+	ArregloDePalabras[13] = "SITIO WEB";	
+	ArregloDePalabras[14] = "BASE DE DATOS";	
+	int NumeroAleatorio ;
+	double NumeroRandom  ;	
+	srand(time(NULL));
+	NumeroRandom =  rand()  ; 
+	NumeroAleatorio = (int)NumeroRandom  ;
+	NumeroAleatorio = NumeroAleatorio % 15  ;
+	palabra = ArregloDePalabras[NumeroAleatorio] ;
+	return palabra;
+}
+
+string modojuego()//Activa el modo de Juego automatico y manual
+{
+	char opcion[1];
+	int op;
+	do
+	{
+		system ("color 3F");
+		Cabecera();
+		CErrada=6;
+		Cuerpo();
+		gotoxy(1,14);
+		cout<<"\t\t1. PALABRA ALEATORIA\n";
+		cout<<"\t\t2. DIGITA LA PALABRA\n\n";
+		cout<<"\t\t9. VOLVER\n";
+		cout<<endl<<"\t\tINGRESE OPCION: ";
+		scanf("%s",opcion);
+		op = opcion[0];
+		switch(op)
+		{
+			case 49:
+				return AutoPalabra();
+			break;
+			
+			case 50:
+				return captPalabra();
+			break;	
+		}
+		system("cls");
+	}while(op!=57);
+	return "X.X";
+}
+
 //Desarrolla la parte Procedimental del juego, haciendo llamados a las funciones 
 //confronta la palabra oculta con la que se esta ingresando letra por letra
 //Presenta los mensajes en caso de ganar o perder
@@ -256,10 +319,15 @@ int juego()
 	int z;
 	int CCorrecta;
 	Tam=0;
+	palabra=modojuego();
+	
+	if(palabra=="X.X"){
+		return 0;
+	}
+			
 	CErrada=0;
-
-	palabra=captPalabra();
 	Tam=palabra.length();
+		
 	inciarRTA();
 	do{
 		letra=captletra();
@@ -292,6 +360,7 @@ int juego()
 		gotoxy(27,14);cout<<"** LO SIENTO HAS PERDIDO **";
 		gotoxy(30,16);cout<<"LA PALABRA OCULTA ERA";
 		gotoxy(40-((Tam+6)/2),18);cout<<"** "<<palabra<<" **\n\n";
+		system("pause");	
 		return 0;
 	}
 	system("cls");
@@ -301,6 +370,7 @@ int juego()
 	gotoxy(30,14);
 	cout<<"!!! FELICITACIONES !!!\n\n\t\t\tHAS ENCONTRADO LA PALABRA OCULTA:";
 	gotoxy(40-((Tam+6)/2),18);cout<<"** "<<palabra<<" **\n\n";
+	system("pause");	
 	return 0;
 }
 
@@ -318,12 +388,10 @@ int main()
 		{
 			case 49:
 				juego();
-				system("pause");			
 			break;
 			
 			case 50:
 				instrucciones();
-				system("pause");			
 			break;	
 		}
 		system("cls");
